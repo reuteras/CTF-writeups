@@ -1,10 +1,10 @@
 # Anteckningar genomgång CERT-SE CTF2021
 
-Mina anteckningar för att lösa CERT-SE CTF2021. Information om CTF:en finns på [CERT-SE CTF2021](https://cert.se/2021/09/cert-se-ctf2021)
+Mina anteckningar för att lösa CERT-SE CTF2021. Information om CTF:en finns på [CERT-SE CTF2021](https://cert.se/2021/09/cert-se-ctf2021).
 
 Ladda ner filen [här](https://cert.se/CERT-SE_CTF2021.zip). Har även sparat en lokal kopia i detta GitHub-repo vilket jag hoppas är okej för CERT-SE.
 
-Börja med att verifiera filen. Kör grep på SHA-256 för snabb verifiering.
+Börja med att verifiera filen. Kör grep på SHA-256-summan för snabb och enkel verifiering.
 
 	$ sha256sum CERT-SE_CTF2021.zip | grep 5b551027a7564119337f2ddebc96e3c6ebbafc3a0572f1488b71955fde5e9706
 	5b551027a7564119337f2ddebc96e3c6ebbafc3a0572f1488b71955fde5e9706  CERT-SE_CTF2021.zip
@@ -32,7 +32,7 @@ Packa upp filen och läs de svenska instruktionerna.
 
 ## Första flaggan
 
-Kontrollera pcap översiktligt.
+Kontrollera pcap översiktligt [capinfos](https://www.wireshark.org/docs/man-pages/capinfos.html).
 
 	$ capinfos CERT-SE_CTF2021.pcap
 	File name:           CERT-SE_CTF2021.pcap
@@ -64,19 +64,17 @@ Kontrollera pcap översiktligt.
 						 Number of packets = 29519
 
 
-Passa på att använda flera olika verktyg för att titta på PCAP:en. Alltid roligt att se vad olika verktyg kan för för information. Börjar med att läsa in filen i [Brim](https://www.brimdata.io/).
+Tänkt passa på att använda flera olika verktyg för att titta på PCAP:en och se vilka som är bra på vad. Alltid roligt att se vad olika verktyg kan bidra med för information. Börjar med att läsa in filen i [Brim](https://www.brimdata.io/).
 
-Filtrering på http visar på surf till bland annat SVT men även till MSB, Polisen, Säkerhetspolisen och Försvarsmaken, FOI, FRA och PTS. Kan nästan tänka att det finns en koppling till NCSC.
-### csdb.uk
-Trafiken till csdb.uk går troligen till sidan [https://csdb.dk/release/?id=196289](https://csdb.dk/release/?id=196289) som omnämns i [Genomgång av CERT-SE CTF2020](https://www.cert.se/2021/01/genomgang-av-cert-se-ctf2020). Har dock inte gjort en egen hämtning med inspelning för att jämföra trafiken och storlek på paket.
+Filtrering på http visar på surf till bland annat SVT men även till MSB, Polisen, Säkerhetspolisen och Försvarsmaken, FOI, FRA och PTS. Kan nästan tänka att det finns en koppling till NCSC. Trafiken till csdb.uk går troligen till sidan [https://csdb.dk/release/?id=196289](https://csdb.dk/release/?id=196289) som omnämns i [Genomgång av CERT-SE CTF2020](https://www.cert.se/2021/01/genomgang-av-cert-se-ctf2020). Har dock inte gjort en egen hämtning med inspelning för att jämföra trafiken och storlek på paket.
 
-Upptäcker direkt en flagga flagga **CTF[bra_start]**.
+Upptäcker direkt en flagga flagga genom att bara söka efter strängen **CTF** och den är **CTF[bra_start]**.
 
-Finns inget som sticker från Suricata i Brim eller något annat som verkar speciellt intressant.
+Finns inget som sticker från de regler som [Suricata](https://suricata.io/) träffar på i Brim och ser inte heller något annat som verkar intressant.
 
 Öppna filen i [Wireshark](https://www.wireshark.org/) för en kronologisk översikt av alla paket..
 
-Hittade återigen  flaggan ovan kommer från en GET request från 192.168.122.156.
+Hittade återigen flaggan ovan kommer från en GET request från 192.168.122.156.
 
     GET /CTF[bra_start] HTTP/1.1
     Host: 192.168.122.129
@@ -92,7 +90,8 @@ Läs in pcap i [Arkime](https://www.arkime.com) för att få en ytterligare en �
 
 	/opt/arkime/bin/capture -r CERT-SE_CTF2021.pcap
 
-Ser att det finns irc-trafik bland mycket annat. Totalt hittar Arkime 782 sessioner. Kontroll av DNS och TLS gör det troligt att de inte döljer något.
+
+Ser att det finns IRC-trafik bland mycket annat. Totalt hittar Arkime 782 sessioner. Kontroll av DNS och TLS gör det troligt att de inte döljer något.
 
 Fortsätt använda olika verktyg och titta på pcap med hjälp av [ndpiReader](https://github.com/ntop/nDPI) (endast delar av output nedan):
 
@@ -141,11 +140,15 @@ Vad går det på lokala nätet som inte är DNS?
 	356	UDP 192.168.122.129:68 <-> 192.168.122.1:67 [proto: 18/DHCP][cat: Network/14][1 pkts/331 bytes <-> 1 pkts/342 bytes][Host: se]
 	639	ICMP 192.168.122.156:0 -> 192.168.122.1:0 [proto: 81/ICMP][cat: Network/14][1 pkts/197 bytes -> 0 pkts/0 bytes]
 
+
+Stannar här när det gäller enkla flaggor.
+
 Första flaggan: **CTF[bra_start]**
+
 
 ## Andra flaggan
 
-Byt till [Networkminer](https://www.netresec.com/?page=NetworkMiner) för att kolla på filer. Finns en fil som heter broadcast.7z och som delvis är lösenordsskyddad. Lösenordet finns i de filer som inte är skyddade och kan fås fram på följande sätt. Första steget är att försöka packa upp filen och få ut de kataloger och filer som inte är lösenordsskyddade. Siffrorna i underkatalogerna anger ordning på tecken i lösenordet och går att få fram med en rad bash. Sortera output från find på sifforrna i katalogerna och sedan skrive ut katalogbokstaven:
+Byt till [Networkminer](https://www.netresec.com/?page=NetworkMiner) för att kolla på filer. Finns en fil som heter broadcast.7z och som delvis är lösenordsskyddad. Lösenordet finns i de filer som inte är skyddade och kan fås fram på följande sätt. Första steget är att försöka packa upp filen och få ut de kataloger och filer som inte är lösenordsskyddade. Siffrorna i underkatalogerna anger ordning på tecken i lösenordet och går att få fram med en rad **bash**. Sortera output från **find** på siffrorna i katalogerna och sedan skriver ut katalogbokstaven med hjälp av **cut** och **xargs**:
 
 	$ 7z x broadcast.7z
 	$ 7z -a x -p$(find . -type f | sort -n -t/ -k5 | cut -f4 -d/ | xargs echo | tr -d ' ') broadcast.7z
@@ -156,11 +159,13 @@ Vilket ger följande:
 	$ cat Zipper/.secret/-/flag.txt
 	ctf[skulle_skippat_linbanan]
 
+
 Andra flaggan är: **ctf[skulle_skippat_linbanan]**.
+
 
 ## Tredje flaggan
 
-Tittar vi vidare på filen broadcast.wav om det kan finnas stenografiskt gömd information. Hittar inget med stegpy eller stegolsb och börjar därför Googla på kopplingen till ISS och Apollo från IRC-chatten. Ser då att det finns ett protokoll som heter Slow-Scan Television transmissions (SSTV) och via bloggposten [How to convert (decode) a Slow-Scan Television transmissions (SSTV) audio file to images using QSSTV in Ubuntu 18.04](https://ourcodeworld.com/articles/read/956/how-to-convert-decode-a-slow-scan-television-transmissions-sstv-audio-file-to-images-using-qsstv-in-ubuntu-18-04) via denna [sida](https://github.com/Dvd848/CTFs/blob/master/2019_picoCTF/m00nwalk.md) går det att få fram en bild. Kör i temporär VM så **sudo bash** för att det är enklare...:
+Tittar vi vidare på filen broadcast.wav om det kan finnas stenografiskt gömd information. Hittar inget med [stegpy](https://pypi.org/project/stegpy/) eller [stego-lsb](https://pypi.org/project/stego-lsb/) och börjar därför Googla på kopplingen till ISS och Apollo som det skrivs om i IRC-chatten. Ser då att det finns ett protokoll som heter [Slow-Scan Television transmissions (SSTV)](https://en.wikipedia.org/wiki/Slow-scan_television) och via bloggposten [How to convert (decode) a Slow-Scan Television transmissions (SSTV) audio file to images using QSSTV in Ubuntu 18.04](https://ourcodeworld.com/articles/read/956/how-to-convert-decode-a-slow-scan-television-transmissions-sstv-audio-file-to-images-using-qsstv-in-ubuntu-18-04) via denna [sida](https://github.com/Dvd848/CTFs/blob/master/2019_picoCTF/m00nwalk.md) går det att få fram en bild. Kör i temporär VM så **sudo bash** känns okej för att förenkla (kommentarer från bloggen):
 
 	root@kali:~$ sudo bash
 	root@kali:~# apt-get install qsstv
@@ -172,26 +177,28 @@ Tittar vi vidare på filen broadcast.wav om det kan finnas stenografiskt gömd i
     root@kali:~# At this point we can click the "Play" button in QSSTV to start the receiver, and then play the audio file:
 	root@kali:/media/sf_CTFs/pico/m00nwalk# paplay -d virtual-cable message.wav
 
-Kopiera ut bilden och släng bort den virtuella maskinen.
 
-Med verktygen ovan får vi fram bilden nedan:
+Kopiera ut bilden och släng bort den virtuella maskinen.
 
 ![Flagga](./resources/R36_20211004_113733.png)
 
+
 Tredje flaggan är: **CTF[RYMDLJUD]**
+
 
 ## Fjärde flaggan
 
 Tittar vidare i Arkime och ser en del roliga saker. En är att Polismyndigheten har börjat köra en egen webbserver :)...
 
-Ser en hämtning till i klartext och det är sidan med ett manifest för "Medelålders Sura Blackhats" (=MSB ... :) ) som utöver text av Kafka även innehåller en bild med namnet giveup.png (var försiktig med tanke på namnet...). Manifestet i sig verkar inte dölja något och diff mot text hittat på nätet ger inga relevanta skillnader. Men det finns en QR-kod. Kolla den via cli:
+Ser en hämtning till i klartext och det är sidan med ett manifest för "Medelålders Sura Blackhats" (=MSB ... :) ) som utöver text av Kafka även innehåller en bild med namnet giveup.png (var försiktig med tanke på namnet...). Manifestet i sig verkar inte dölja något och **diff** mot text hittat på nätet ger inga relevanta skillnader. Men det finns en QR-kod. Kolla den via cli:
 
 	$ sudo apt install zbar-tools
 	$ zbarimg giveup.jpg | grep QR | cut -f2 -d: | base64 --decode
 	scanned 1 barcode symbols from 1 images in 0.04 seconds
 	
 	https://youtu.be/dQw4w9WgXcQ
-	
+
+
 Då filnamnet indikerar ett gammalt hederligt skämt på internet så undvik att behöva se den videon och verifiera titel på sidan via [curl](https://curl.se/) istället.
 
 	curl -s -L https://youtu.be/dQw4w9WgXcQ | grep -i -o '<title>[^<]*</title>'
@@ -199,7 +206,7 @@ Då filnamnet indikerar ett gammalt hederligt skämt på internet så undvik att
 
 Som sagt, klicka inte på länkar...
 
-HTML-kommentaren indikerar att detta är en del av CTF:en. Då jag inte hittar något avvikande i texten rörande färger, avvikelse från ursprungliga texten av Kafka så är det troligen bilden som döljer något mer än QR-koden. Kollat många olika sorters verktyg för stenografi utan resultat men hittade till slut stegseek:
+HTML-kommentaren indikerar att detta är en del av CTF:en. Då jag inte hittar något avvikande i texten rörande färger, avvikelse från ursprungliga texten av Kafka så är det troligen bilden som döljer något mer än QR-koden. Kollat många olika sorters verktyg för stenografi utan resultat men hittade till slut [stegseek](https://github.com/RickdeJager/stegseek)-repot på GitHub och jag laddade ner version [0.6](https://github.com/RickdeJager/stegseek/releases/download/v0.6/stegseek_0.6-1.deb):
 
 	┌──(kali㉿kali)-[~]
 	└─$ sudo dpkg --install Downloads/stegseek_0.6-1.deb
@@ -223,8 +230,6 @@ HTML-kommentaren indikerar att detta är en del av CTF:en. Då jag inte hittar n
 	CTF[chameleon]
 
 
-Koden kommer ifrån [stegseek](https://github.com/RickdeJager/stegseek)-repot på GitHub och jag laddade ner version [0.6](https://github.com/RickdeJager/stegseek/releases/download/v0.6/stegseek_0.6-1.deb).
-
 Fjärde flaggan är: **CTF[chameleon]**
 
 
@@ -238,17 +243,17 @@ Titta nu på memdump.dmp som filen heter efter att vi packar upp memdump.7z som 
 	Linux version 4.9.0-6-amd64 (debian-kernel@lists.debian.org) (gcc version 6.3.0 20170516 (Debian 6.3.0-18+deb9u1) ) #1 SMP Debian 4.9.82-1+deb9u3 (2018-03-02)
 
 
-Vi har tur och det finns en profil som fungerar från [Volatility](https://github.com/volatilityfoundation/volatility):
-
-https://github.com/volatilityfoundation/profiles/blob/master/Linux/Debian/x64/Debian94.zip
+Vi har tur och det finns en profil som fungerar från [Volatility](https://github.com/volatilityfoundation/volatility) 2 som heter [Debian94.zip](https://github.com/volatilityfoundation/profiles/blob/master/Linux/Debian/x64/Debian94.zip).
 
 	curl -s -O https://github.com/volatilityfoundation/profiles/raw/master/Linux/Debian/x64/Debian94.zip
 
+
 Valde att göra Volatility 2 då jag hade problem med 3 och två fungerade bra.
 
-Kör vi pslist ser  vi följande intressanta namn (börjar med att tänka enkelt):
+Kör vi modulen **linux_pslist** ser jad direkt följande intressanta namn (börjar med att tänka enkelt):
 
 	0xffff9c984d628080 SuperSecretLogo      414             403             1000            1000   0x000000000a4cc000 2021-08-03 10:21:32 UTC+0000
+
 
 Den hittas även med funktionen linux_malfind:
 
@@ -290,9 +295,11 @@ Den hittas även med funktionen linux_malfind:
 	0x40403f 00               DB 0x0
 	...
 
+
 Se om vi kan hitta filen genom att dumpa filsystemet (sudo för att vol.py vill sätta rätt ägare på filerna):
 
 	sudo python2.7 /usr/local/bin/vol.py --plugins=./ -f Documents/CTF2021/Findings/extract/memdump4/memdump4.dmp --profile=LinuxDebian94x64 linux_recover_filesystem -D out | grep -v "Failed to"
+
 
 Filen finns där under användarens hemmakatalog. Strings på filen gör att vi hittar lösenordet "h3mlig!" i filen. Men det ger inte svaret när man kör programmet (VM så kör filen - vad kan möjligen gå fel...). Kontrollera filen med radare2. Först **aaa** för att analysera filen och sedan **afl** för att lista funktioner.
 
@@ -329,11 +336,12 @@ Filen finns där under användarens hemmakatalog. Strings på filen gör att vi 
 	0x004010e0    1 11           sym.imp.gets
 	[0x004010f0]>
 
+
 Av de funktioner som listas verkar **sym.print_flag** mycket intressant. Kan vi komma till den via vanlig execvering av programmet? Vad jag kunnat se är så inte fallet.
 
 Istället kan vi patcha programmet så att vi anropar denna funktion istället för någon annan. Jag valde att byta ut anropet till utskrift av CERT-loggan för att även slippa skriva in lösenordet. Lös detta genom att göra följande. Loggan var snygg kan jag tillägga.
 
-Starta om radare2 med rw för att kunna skriva den patchade filen.
+Starta om radare2 med -Aw för att kunna skriva den patchade filen.
 
 	$ cp SuperSecretLogonTool patchme
 	$ r2 -Aw patchme
@@ -352,9 +360,8 @@ Starta om radare2 med rw för att kunna skriva den patchade filen.
 	Bra gjort! Här kommer flaggan: CTF[Stackars_Myrstack]
 	Ange lösenord:
 
-CTRL-C för att avsluta. Stegen ovan är att köra **aaa** för att anlysera filen. Sök sedan fram main, **s main**. Titta på main med **pdf** och se att vill ändra på position **0x004014f6** så sök fram oss dit med hjälp av **s 0x004014f6**. Gå sedan i in i Visuellt läge med **V**. Ändra vy med **p** och gör en Append på raden med *A*. Skriv in nya anropet till rätt funktion **call sym.print_flag** och tryck enter. Sedan **Y** för att spara och **q** två gånger för att sluta. Kör sedan den patchade filen och få flaggan.
 
-Femte flaggan är: **CTF[Stackars_Myrstack]**
+CTRL-C för att avsluta. Stegen ovan är att köra **aaa** för att anlysera filen. Sök sedan fram main, **s main**. Titta på main med **pdf** och se att vill ändra på position **0x004014f6** så sök fram oss dit med hjälp av **s 0x004014f6**. Gå sedan i in i Visuellt läge med **V**. Ändra vy med **p** och gör en Append på raden med *A*. Skriv in nya anropet till rätt funktion **call sym.print_flag** och tryck enter. Sedan **Y** för att spara och **q** två gånger för att sluta. Kör sedan den patchade filen och få flaggan.
 
 Tittade mer i filsystemet och kontrollerade om det fanns något mer att hitta. Kan det finnas något lösenord som är en flagga? Ska vi försöka knäcka lösenord av typen "CTF[<sträng>]". Börja med att se om lösenorden är enkla:
 
@@ -370,7 +377,7 @@ Tittade mer i filsystemet och kontrollerade om det fanns något mer att hitta. K
 
 Samma lösenord på båda kontona och inget spår att titta vidare på.
 
-Femte flaggan: **CTF[Stackars_Myrstack]**
+Femte flaggan är: **CTF[Stackars_Myrstack]**
 
 
 ## Sjätte flaggan
@@ -385,12 +392,14 @@ Tittar vi närmare på strecken kan vi få ut följande bokstäver (uppifrån oc
 
     [XGU]IVHRORVMH
 
+
 Det är inte rot13 och [CyberChef](https://gchq.github.io/CyberChef/) hittar inget direkt med sin funktion magic. Låt oss istället titta vidare på strängen i [ciphey]() och ange att vi vet att den av den innehåller strängen CTF. Börja med att installera (tar ej med output):
 
     $ python3 -m venv ciphey
     $ source ciphey/bin/activate
     $ python3 -m pip install -U pip
     $ python3 -m pip install -U ciphey
+
 
 Sedan kan vi köra ciphey:
 
@@ -407,12 +416,12 @@ Sjätte flaggan är: **[CTF]RESILIENS**
 
 ## Flaggor
 
-Första flaggan: **CTF[bra_start]**
-Andra flaggan är: **ctf[skulle_skippat_linbanan]**.
-Tredje flaggan är: **CTF[RYMDLJUD]**
-Fjärde flaggan är: **CTF[chameleon]**
-Femte flaggan är: **CTF[Stackars_Myrstack]**
-Sjätte flaggan är: **[CTF]RESILIENS**
+Första flaggan är **CTF[bra_start]**
+Andra flaggan är **ctf[skulle_skippat_linbanan]**.
+Tredje flaggan är **CTF[RYMDLJUD]**
+Fjärde flaggan är **CTF[chameleon]**
+Femte flaggan är **CTF[Stackars_Myrstack]**
+Sjätte flaggan är **[CTF]RESILIENS**
 
 
 ## Verktyg
@@ -423,3 +432,4 @@ Utöver verktygen jag listat ovan har jag testat flera andra utan resultat. Har 
 ## Sammanfattning
 
 Kul och mycket välgjord CTF av CERT-SE! Varierande uppgifter och roligt med flaggor som fås fram genom en stor variation av tekniker. Ser fram emot CTF2022!
+
