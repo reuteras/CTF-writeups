@@ -18,4 +18,4 @@ Målsättning blev istället att göra en one-liner även om den blev lite väl 
         xargs curl -s -o - | multimon-ng -t mp3 -a MORSE_CW /dev/stdin 2>&1 | tail -1"
     GOD JUL ÖNSKAR FRA
 
-Får passa på att önska god jul till [FRA](https://www.fra.se) samtidigt!
+Svaret är alltså **GOD JUL ÖNSKAR FRA**. Får passa på att önska god jul till [FRA](https://www.fra.se) samtidigt!
