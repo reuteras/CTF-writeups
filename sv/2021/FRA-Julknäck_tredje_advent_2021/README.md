@@ -4,4 +4,8 @@ Tidigare har jag löst utmaningarna i en Docker-container med enbart CLI. Denna 
 
 Notebook-filen finns [här](fra-tredje-advent.ipynb).
 
-Första försöket till lösning och jag ska fundera igenom lösningen en gång till vid tillfälle.
+Rätt lösning enligt denna [tweet](https://twitter.com/FRAdioanstalt/status/1472930703931322369) från FRA:
+
+    Rätt svar var:
+    E är chef och G ställföreträdare.
+    De har tre lokalavdelningar, och C och M bor troligen tillsammans eftersom de inte ringer varandra. Bästa sättet att lösa uppgiften är att rita upp ett diagram över förbindelserna.
