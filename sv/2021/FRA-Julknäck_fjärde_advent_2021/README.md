@@ -7,3 +7,5 @@ Vi ska bilda fem ord utifrån ett antal bokstäver. Uppgiften går snabbare att 
     $ python3 advent4.py
     skal tiga utan varm öken
     skal tarm utan viga öken
+
+Lösningar enligt FRA finns på [Twitter](https://twitter.com/FRAdioanstalt/status/1475776124336627716?s=20). Min lösning ovan överstämmer med den som FRA har.
