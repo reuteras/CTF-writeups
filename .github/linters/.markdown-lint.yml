@@ -4,8 +4,11 @@ extends: "markdownlint/style/prettier"
 
 default: true
 
-MD013: false
+MD012: false
+MD013:
+  enabled: false
 MD014: false
+MD033: false
 MD034: false
 MD059: false
 

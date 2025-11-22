@@ -393,7 +393,7 @@ Tittar vi närmare på strecken kan vi få ut följande bokstäver (uppifrån oc
     [XGU]IVHRORVMH
 
 
-Det är inte rot13 och [CyberChef](https://gchq.github.io/CyberChef/) hittar inget direkt med sin funktion magic. Låt oss istället titta vidare på strängen i [ciphey]() och ange att vi vet att den av den innehåller strängen CTF. Börja med att installera (tar ej med output):
+Det är inte rot13 och [CyberChef](https://gchq.github.io/CyberChef/) hittar inget direkt med sin funktion magic. Låt oss istället titta vidare på strängen i ciphey och ange att vi vet att den av den innehåller strängen CTF. Börja med att installera (tar ej med output):
 
     $ python3 -m venv ciphey
     $ source ciphey/bin/activate
