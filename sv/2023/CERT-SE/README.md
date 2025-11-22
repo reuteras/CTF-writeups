@@ -96,7 +96,7 @@ Första observatione är att vi har en CTF-sträng och att det även finns två 
 
 Om det stämmer så har vi *rain (-ra) cd (d=i) tent (t=d)* vilket då blir *incident* och vi har första flaggan **CTF[incident]**.
 
-Texten kommer från *Henry V, Act V, Scene III [What's he that wishes so?]* och finns [online](https://poets.org/poem/henry-v-act-v-scene-iii-whats-he-wishes-so). 
+Texten kommer från *Henry V, Act V, Scene III [What's he that wishes so?]* och finns [online](https://poets.org/poem/henry-v-act-v-scene-iii-whats-he-wishes-so).
 
 Meningen "Let me put on my slightly larger glasses" är med i The IT Crowd,  https://www.youtube.com/watch?v=LNKocMiehZA.
 Meningen "Bow ties are cool" är troligen en hänvisning till Doctor Who (https://www.youtube.com/watch?v=vPGTizdGwSc och https://knowyourmeme.com/memes/bow-ties-are-cool).
@@ -337,7 +337,7 @@ $ ffprobe -loglevel quiet -show_entries stream_tags:format_tags -find_stream_inf
 }
 ```
 
-Eftersom artisten är "CTF" är det sannolikt att vi kan hitta något intressant här. 
+Eftersom artisten är "CTF" är det sannolikt att vi kan hitta något intressant här.
 
 Testa om det är stenografi. Testat följande verktyg:
 
@@ -386,7 +386,7 @@ Vilket kan tyda på att det inte finns DTMF-toner. Det var varningar om en chuck
 Testa även multimon-ng:
 
 ```bash
-$ multimon-ng -q -c -a DTMF -t wav ../Downloads/CERT-SE_CTF2023/message.wav 
+$ multimon-ng -q -c -a DTMF -t wav ../Downloads/CERT-SE_CTF2023/message.wav
 ```
 
 Så troligen är det felaktig information from dtmf2num.
@@ -394,7 +394,7 @@ Så troligen är det felaktig information from dtmf2num.
 Titta efter SSTV med hjälp av https://github.com/colaclanth/sstv.git
 
 ```bash
-$ sstv -d ../Downloads/CERT-SE_CTF2023/message.wav -o result.png                                                                                          
+$ sstv -d ../Downloads/CERT-SE_CTF2023/message.wav -o result.png
 [sstv] Searching for calibration header... 60.9s
 [sstv] Couldn't find SSTV header in the given audio file
 

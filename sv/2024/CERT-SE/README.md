@@ -48,7 +48,7 @@ First add Wireshark to the Sandbox. Since nothing is permanent in a Windows Sand
 
 ```bash
 > dfirws-install.sh -Wireshark
-``` 
+```
 
 Start a new PowerShell window that has the updated PATH.
 
@@ -570,7 +570,7 @@ And we have flag 8: **CTF[HAPPY BIRTHDAY]**
 
 ## Flag 9 - Recycle-Bin.zip
 
-Lets continue with **Recycle-Bin.zip**. 
+Lets continue with **Recycle-Bin.zip**.
 
 ```bash
  get-ChildItem . -Filter `$I* | ForEach-Object { C:\Users\WDAGUtilityAccount\Desktop\readonly\recbin.exe -f $_} | Sort-Object

@@ -47,9 +47,9 @@ Låt se hur svårt [FRA](https://www.fra.se) har gjort CTF:en:
      <input type="text" name="search" />
      <input type="Submit" value="Search">
     </form>
-    
+
     <h1>Välkommen till vår mobilvänliga CTF!</h1>
-    
+
     <h2>Det finns 3 flaggor att hämta.</h2>
     <h3>Flagga1: Närmare än vad du tror</h3>
     <h3>Flagga2: En sökning bort</h3>
@@ -92,7 +92,7 @@ Vi har även fått tips om att söka efter flagga två och att flagga tre ska fi
     <p class="indent">./Flagga2</p><br>
      --></div>
     <h1>Välkommen till vår mobilvänliga CTF!</h1>
-    
+
     <h2>Det finns 3 flaggor att hämta.</h2>
     <h3>Flagga1: Närmare än vad du tror</h3>
     <h3>Flagga2: En sökning bort</h3>
@@ -121,7 +121,7 @@ Fortsatte på tisdagen och då gick det bättre. Det är intressant att sökresu
     X-Powered-By: PHP/7.4.24
     Transfer-Encoding: chunked
     Content-Type: text/html; charset=UTF-8
-    
+
     <!DOCTYPE html>
     <html>
     <head>
@@ -150,7 +150,7 @@ Fortsatte på tisdagen och då gick det bättre. Det är intressant att sökresu
     <p class="indent">/usr/bin/find: missing argument to `-name'</p><br>
      --></div>
     <h1>Välkommen till vår mobilvänliga CTF!</h1>
-    
+
     <h2>Det finns 3 flaggor att hämta.</h2>
     <h3>Flagga1: Närmare än vad du tror</h3>
     <h3>Flagga2: En sökning bort</h3>
