@@ -4,9 +4,10 @@ extends: "markdownlint/style/prettier"
 
 default: true
 
-MD012: false
+MD012:
+  maximum: 5
 MD013:
-  enabled: false
+  line_length: 1000
 MD014: false
 MD033: false
 MD034: false
