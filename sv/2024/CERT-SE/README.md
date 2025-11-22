@@ -178,7 +178,7 @@ Also check the extracted PCAP files for FTP transfers and files. We find three f
 
 Extract the files with the script above and we will have three new files *60*, *64* and *67*. Check the content and rename.
 
-```
+```bash
 > file 60 64 67
 60: PE32+ executable (GUI) x86-64, for MS Windows, 6 sections
 64: Zip archive data, at least v2.0 to extract, compression method=store

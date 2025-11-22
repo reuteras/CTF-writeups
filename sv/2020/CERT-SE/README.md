@@ -72,6 +72,7 @@ Observera speciellt texten **The code is: "OC1iaXQtQzBtcHV0M2VyLXcwbmQzciE/".**.
 
 I sammanställningen ovan ser vi att det finns en FTP-överföring. Var är den?
 
+<!-- markdownlint-disable -->
     $ tshark -n -r CERT-SE\ challenge2020.pcapng -T fields -e frame.number -e frame.time -e ip.src -e tcp.port -e ip.dst ftp-data.current-working-directory
     282	Aug 20, 2020 10:38:51.544726450 UTC	192.168.122.156	37593,20	192.168.122.129
     283	Aug 20, 2020 10:38:51.544767005 UTC	192.168.122.156	37593,20	192.168.122.129
@@ -79,6 +80,7 @@ I sammanställningen ovan ser vi att det finns en FTP-överföring. Var är den?
     286	Aug 20, 2020 10:38:51.546199427 UTC	192.168.122.156	37593,20	192.168.122.129
     287	Aug 20, 2020 10:38:51.546234484 UTC	192.168.122.156	37593,20	192.168.122.129
     308	Aug 20, 2020 10:38:53.734837396 UTC	192.168.122.129	20,42973	192.168.122.156
+<!-- markdownlint-enable -->
 
 Extrahera den filen och se vad det är för filtyp. Kan se att det är **XZ compressed data** så spara ner som **tmp.xz** och packa upp den filen:
 
@@ -122,7 +124,7 @@ Vi har ett spel eller liknande för C64. Efter lite sökning på Google hittade 
 
 Kör emulatorn med filen som input.
 
-    $ vice-jz.x64 cert-se\ ctf2020.tap
+    vice-jz.x64 cert-se\ ctf2020.tap
 
 Se bilden nedan för att få svaret som är HTTP 418.
 
