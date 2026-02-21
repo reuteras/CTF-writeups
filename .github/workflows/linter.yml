@@ -29,7 +29,7 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can
       # access it
       - name: Checkout code
-        uses: actions/checkout@main
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
           fetch-depth: 0
@@ -50,4 +50,5 @@ jobs:
           VALIDATE_PYTHON_ISORT: false
           VALIDATE_PYTHON_MYPY: false
           VALIDATE_PYTHON_PYLINT: false
+          VALIDATE_SPELL_CODESPELL: false
           VALIDATE_TRIVY: false
